@@ -18,9 +18,9 @@ HDFS 与 MapReduce 的结合是强大的。在处理大数据的过程中，当 
 　　
 对于开发人员，直接使用 Java APIs 可能是乏味或容易出错的，同时也限制了 Java 程序员在 Hadoop 上编程的运用灵活性。于是 Hadoop 提供了两个解决方案，使得 Hadoop 编程变得更加容易。
 
--Pig 是一种编程语言，它简化了 Hadoop 常见的工作任务。Pig 可加载数据、表达转换数据以及存储最终结果。Pig 内置的操作使得半结构化数据变得有意义（如日志文件）。同时 Pig 可扩展使用 Java 中添加的自定义数据类型并支持数据转换。
+- Pig 是一种编程语言，它简化了 Hadoop 常见的工作任务。Pig 可加载数据、表达转换数据以及存储最终结果。Pig 内置的操作使得半结构化数据变得有意义（如日志文件）。同时 Pig 可扩展使用 Java 中添加的自定义数据类型并支持数据转换。
 
--Hive 在 Hadoop 中扮演数据仓库的角色。Hive 添加数据的结构在 HDFS（hive superimposes structure on data in HDFS），并允许使用类似于 SQL 语法进行数据查询。与 Pig 一样，Hive 的核心功能是可扩展的。
+- Hive 在 Hadoop 中扮演数据仓库的角色。Hive 添加数据的结构在 HDFS（hive superimposes structure on data in HDFS），并允许使用类似于 SQL 语法进行数据查询。与 Pig 一样，Hive 的核心功能是可扩展的。
 
 Pig 和 Hive 总是令人困惑的。**Hive 更适合于数据仓库的任务，Hive 主要用于静态的结构以及需要经常分析的工作。**Hive 与 SQL 相似促使其成为 Hadoop 与其他 BI 工具结合的理想交集。Pig赋予开发人员在大数据集领域更多的灵活性，并允许开发简洁的脚本用于转换数据流以便嵌入到较大的应用程序。Pig 相比 Hive 相对轻量，它主要的优势是相比于直接使用 Hadoop Java APIs 可大幅削减代码量。正因为如此，Pig 仍然是吸引大量的软件开发人员。
 　　
