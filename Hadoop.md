@@ -11,13 +11,33 @@ MapReduce——Hadoop 的核心
 ---------------------------------
 
 MapReduce 的重要创新是当处理一个大数据集查询时会将其任务分解并在运行的多个节点中处理。**当数据量很大时就无法在一台服务器上解决问题，此时分布式计算优势就体现出来。**将这种技术与 Linux 服务器结合可获得性价比极高的替代大规模计算阵列的方法。
+* mapreduce是一种模式，一种什么模式呢?一种云计算的核心计算模式，一种分布式运算技术，也是简化的分布式编程模式，它主要用于解决问题的程序开发模型，也是开发人员拆解问题的方法。
+* 如下图所示，mapreduce模式的主要思想是将自动分割要执行的问题（例如程序）拆解成map（映射）和reduce（化简）的方式，流程图如下所示：
+* ![github logo](http://static.open-open.com/lib/uploadImg/20131129/20131129084429_745.png)
+* 在数据被分割后通过Map 函数的程序将数据映射成不同的区块，分配给计算机机群处理达到分布式运算的效果，在通过Reduce 函数的程序将结果汇整，从而输出开发者需要的结果。
+* MapReduce 借鉴了函数式程序设计语言的设计思想，其软件实现是指定一个Map 函数，把键值对(key/value)映射成新的键值对(key/value)，形成一系列中间结果形式的key/value 对，然后把它们传给Reduce(规约)函数，把具有相同中间形式key 的value 合并在一起。Map 和Reduce 函数具有一定的关联性。函数描述如下表 所示：
+* ![github logo](http://static.open-open.com/lib/uploadImg/20131129/20131129084431_771.png)
+* MapReduce致力于解决大规模数据处理的问题，因此在设计之初就考虑了数据的局部性原理，利用局部性原理将整个问题分而治之。MapReduce集 群由普通PC机构成，为无共享式架构。在处理之前，将数据集分布至各个节点。处理时，每个节点就近读取本地存储的数据处理（map），将处理后的数据进行 合并（combine）、排序（shuffle and sort）后再分发（至reduce节点），避免了大量数据的传输，提高了处理效率。无共享式架构的另一个好处是配合复制（replication）策 略，集群可以具有良好的容错性，一部分节点的down机对集群的正常工作不会造成影响。
+* 下面整幅图是有关hadoop的作业调优参数及原理，图的左边是MapTask运行示意图，右边是ReduceTask运行示意图：
+* ![github logo](http://static.open-open.com/lib/uploadImg/20131129/20131129084431_727.jpg)
+* 其中map阶段，当map task开始运算，并产生中间数据后并非直接而简单的写入磁盘，它首先利用内存buffer来对已经产生的buffer进行缓存，并在内存buffer中 进行一些预排序来优化整个map的性能。而上图右边的reduce阶段则经历了三个阶段，分别Copy->Sort->reduce。我们能 明显的看出，其中的Sort是采用的归并排序，即merge sort。
+* **Hadoop 是一个实现了MapReduce 计算模型的开源分布式并行编程框架，**程序员可以借助Hadoop 编写程序，将所编写的程序运行于计算机机群上，从而实现对海量数据的处理。
+* Hadoop 还提供一个分布式文件系统(HDFS）及分布式数据库（HBase）用来将数据存储或部署到各个计算节点上。所以，你可以大致认 为：**Hadoop=HDFS（文件系统，数据存储技术相关）+HBase（数据库）+MapReduce（数据处理）。**Hadoop 框架如下图所示：
+* ![github logo](http://static.open-open.com/lib/uploadImg/20131129/20131129084432_419.jpg)
+* 借助Hadoop 框架及云计算核心技术MapReduce 来实现数据的计算和存储，并且将HDFS 分布式文件系统和HBase 分布式数据库很好的融入到云计算框架中，从而实现云计算的分布式、并行计算和存储，并且得以实现很好的处理大规模数据的能力。
+
     
 而对于分布式计算，每个服务器必须具备对数据的访问能力，这就是 HDFS（Hadoop Distributed File System）所起到的作用。
+* Hadoop HDFS是Google GFS存储系统的开源实现，主要应用场景是作为并行计算环境（MapReduce）的基础组件，同时也是BigTable（如HBase、 HyperTable）的底层分布式文件系统。HDFS采用master/slave架构。一个HDFS集群是有由一个Namenode和一定数目的 Datanode组成。Namenode是一个中心服务器，负责管理文件系统的namespace和客户端对文件的访问。Datanode在集群中一般是 一个节点一个，负责管理节点上它们附带的存储。在内部，一个文件其实分成一个或多个block，这些block存储在Datanode集合里。如下图所示 （HDFS体系结构图）：
+* ![github logo](http://static.open-open.com/lib/uploadImg/20131129/20131129084432_987.jpg)
+* Hadoop MapReduce是一个使用简易的软件框架，基于它写出来的应用程序能够运行在由上千个商用机器组成的大型集群上，并以一种可靠容错的方式并行处理上TB级别的数据集。
+* 一个MapReduce作业（job）通常会把输入的数据集切分为若干独立的数据块，由 Map任务（task）以完全并行的方式处理它们。框架会对Map的输出先进行排序，然后把结果输入给Reduce任务。通常作业的输入和输出都会被存储 在文件系统中。整个框架负责任务的调度和监控，以及重新执行已经失败的任务。如下图所示（Hadoop MapReduce处理流程图）：
+* ![github logo](http://static.open-open.com/lib/uploadImg/20131129/20131129084433_455.jpg)
 
 HDFS 与 MapReduce 的结合是强大的。在处理大数据的过程中，当 Hadoop集群中的服务器出现错误时，整个计算过程并不会终止。同时 HFDS 可保障在整个集群中发生故障错误时的数据冗余。当计算完成时将结果写入 HFDS 的一个节点之中。HDFS 对存储的数据格式并无苛刻的要求，数据可以是非结构化或其它类别。相反关系数据库在存储数据之前需要将数据结构化并定义架构。
 
 开发人员编写代码责任是使数据有意义。Hadoop MapReduce 级的编程利用 Java APIs，并可手动加载数据文件到 HDFS 之中。
-　　
+
 对于开发人员，直接使用 Java APIs 可能是乏味或容易出错的，同时也限制了 Java 程序员在 Hadoop 上编程的运用灵活性。于是 Hadoop 提供了两个解决方案，使得 Hadoop 编程变得更加容易。
 
 - Pig (雅虎提供) 是一种编程语言，它简化了 Hadoop 常见的工作任务。Pig 可加载数据、表达转换数据以及存储最终结果。Pig 内置的操作使得半结构化数据变得有意义（如日志文件）。同时 Pig 可扩展使用 Java 中添加的自定义数据类型并支持数据转换。
@@ -32,6 +52,21 @@ HCatalog则基于Apache Hadoop之上的数据表和存储管理服务。
 -------------------------------------------
 
 Hadoop 核心还是一套批处理系统，数据加载进HDFS、处理然后检索。对于计算这或多或少有些倒退，但通常互动和随机存取数据是有必要的。HBase 作为面向列的数据库运行在 HDFS 之上。HBase 以 Google BigTable为蓝本。项目的目标就是快速在主机内数十亿行数据中定位所需的数据并访问它。HBase 利用 MapReduce 来处理内部的海量数据。同时 Hive 和 Pig 都可以与 HBase 组合使用，Hive 和 Pig 还为 HBase 提供了高层语言支持，使得在 HBase 上进行数据统计处理变的非常简单。
+* HBase是一个分布式的、面向列的开源数据库，它不同于一般的关系数据库,是一个适合于非结构化数据存储的数据库。另一个不同的是HBase基于列的而 不是基于行的模式。HBase使用和 BigTable非常相同的数据模型。用户存储数据行在一个表里。一个数据行拥有一个可选择的键和任意数量的列，一个或多个列组成一个 ColumnFamily，一个Fmaily下的列位于一个HFile中，易于缓存数据。表是疏松的存储的，因此用户可以给行定义各种不同的列。在 HBase中数据按主键排序，同时表按主键划分为多个HRegion，如下图所示（HBase数据表结构图）：
+* ![github logo](http://static.open-open.com/lib/uploadImg/20131129/20131129084434_78.jpg)
+* 如下图所示，便是hadoop的内部结构，我们可以看到，海量的数据交给hadoop处理后，在hadoop的内部中，正如上文所述：hadoop提供一 个分布式文件系统（HDFS）及分布式数据库（Hbase）用来存储或部署到各个计算点上，最终在内部采取mapreduce的模式对其数据进行处理，然 后输出处理结果：
+* ![github logo](http://static.open-open.com/lib/uploadImg/20131129/20131129084435_636.jpg)
+* **海量数据产品架构**
+* ![github logo](http://static.open-open.com/lib/uploadImg/20131129/20131129084436_937.jpg)
+* **数据来源层。**存放着交易数据。在数据源层产生的数据，通过DataX，DbSync和Timetunel准实时的传输到下面第2点所述的“云梯”。
+* **计算层。**在这个计算层内，采用的是hadoop集群，这个集群，我们暂且称之为云梯，是计算层的主要组成部分。在云梯上，系统每天会对数据产品进行不同的mapreduce计算。
+* **存储层。**在这一层，采用了两个东西，一个使MyFox，一个是Prom。MyFox是基于MySQL的分布式关系型数据库的集群，Prom是基于 hadoop Hbase技术 的（读者可别忘了，在上文第一部分中，咱们介绍到了这个hadoop的组成部分之一，Hbase—在hadoop之内的一个分布式的开源数据库）的一个 NoSQL的存储集群。
+* **查询层。**在这一层中，有一个叫做glider的东西，这个glider是以HTTP协议对外提供restful方式的接口。数据产品通过一个唯一的URL来获取到它想要的数据。同时，数据查询即是通过MyFox来查询的。
+* **MyFox。**MySQL的MyISAM引擎作为底层的数据存储引擎。且为了应对海量数据，他们设计了分布式MySQL集群的查询代理层-MyFOX。如下图所示，是MySQL的数据查询过程：
+* ![github logo](http://static.open-open.com/lib/uploadImg/20131129/20131129084437_327.jpg)
+* 在MyFOX的每一个节点中，存放着热节点和冷节点两种节点数据。顾名思义，热节点存放着最新的，被访问频率较高的数据；冷节点，存放着相对而来比较旧 的，访问频率比较低的数据。而为了存储这两种节点数据，出于硬件条件和存储成本的考虑，你当然会考虑选择两种不同的硬盘，来存储这两种访问频率不同的节点数据。如下图所示：
+* ![github logo](http://static.open-open.com/lib/uploadImg/20131129/20131129084438_175.jpg)
+* “热节点”，选择每分钟15000转的SAS硬盘，按照一个节点两台机器来计算，单位数据的存储成本约为4.5W/TB。相对应地，“冷数据”我们选择了每分钟7500转的SATA硬盘，单碟上能够存放更多的数据，存储成本约为1.6W/TB。
 
 但为了授权随机存储数据，HBase 也做出了一些限制：例如 Hive 与 HBase 的性能比原生在 HDFS 之上的 Hive 要慢4-5倍。同时 HBase 大约可存储 PB 级的数据，与之相比 HDFS 的容量限制达到 30PB。HBase 不适合用于 ad-hoc 分析，HBase 更适合整合大数据作为大型应用的一部分，包括日志、计算以及时间序列数据。
 　　
